@@ -169,8 +169,9 @@ module.exports = function(grunt) {
 			prod: {
 				files: [
 					{
-						src: ['src/assets/svg/**/*.svg'],
-						dest: 'src/assets/png'
+						cwd: 'src/assets/svg/',
+						src: ['**/*.svg'],
+						dest: 'src/assets/png/'
 					}
 				]
 			}
