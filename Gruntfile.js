@@ -10,7 +10,7 @@ module.exports = function(grunt) {
 		watch: {
 			html: {
 				files: 'src/**/*.html',
-				tasks: ['htmlbuild'],
+				tasks: ['htmlbuild','htmlmin'],
 				option: {
 					interrupt: true
 				}
@@ -18,7 +18,7 @@ module.exports = function(grunt) {
 
 			css: {
 				files: 'src/sass/*.scss',
-				tasks: ['sass'],
+				tasks: ['sass','csso:compress'],
 				options: {
 					interrupt: true
 				}
@@ -47,6 +47,10 @@ module.exports = function(grunt) {
 						head2: 'src/parts/head2.part.html',
 						header: 'src/parts/header.part.html',
 						footer: 'src/parts/footer.part.html'
+					},
+
+					styles: {
+						critical_home: 'src/parts/critical-home.css'
 					}
 				}
 			}
@@ -64,6 +68,42 @@ module.exports = function(grunt) {
 					'dist/css/old-ie.css': 'src/sass/old-ie.scss',
 					'dist/css/really-old-ie.css': 'src/sass/really-old-ie.scss',
 					'dist/css/fonts.css': 'src/sass/webfonts.scss'
+				}
+			}
+		},
+
+		criticalcss: {
+			tpl_home: {
+				options: {
+					//forceInclude: [],
+					url: "127.0.0.1:4000",
+					width: 1200,
+					height: 900,
+					outputfile: "src/parts/critical-home.css",
+					filename: "dist/css/style.css",
+					buffer: 800*1024
+				}
+			}
+		},
+
+		csso: {
+			compress: {
+				options: {
+					report: 'gzip'
+				},
+
+				files: {
+					'dist/css/style.css': ['dist/css/style.css']
+				}
+			},
+
+			compress_critical: {
+				options: {
+					report: 'gzip'
+				},
+
+				files: {
+					'src/parts/critical-home.css': ['src/parts/critical-home.css']
 				}
 			}
 		},
@@ -110,7 +150,7 @@ module.exports = function(grunt) {
 				files: [
 					{
 						expand: true,
-						cwd: 'src/assets/images',
+						cwd: 'src/assets/svg',
 						src: '{,*/}*.svg',
 						dest: 'dist/images/'
 					},
@@ -129,7 +169,9 @@ module.exports = function(grunt) {
 			prod: {
 				files: [
 					{
-						src: ['dist/images/**/*.svg']
+						cwd: 'src/assets/svg/',
+						src: ['**/*.svg'],
+						dest: 'src/assets/png/'
 					}
 				]
 			}
@@ -142,7 +184,7 @@ module.exports = function(grunt) {
 					quitAfter: true
 				},
 
-				src: ['dist/images']
+				src: ['src/assets/png']
 			}
 		},
 
@@ -165,6 +207,17 @@ module.exports = function(grunt) {
 			}
 		},
 
+		copy: {
+			images: {
+				expand: true,
+				cwd: 'src/assets/',
+				src: '**',
+				dest: 'dist/images/',
+				flatten: true,
+				filter: 'isFile'
+			},
+		},
+
 		// Connect plugin for server and synchronisation between browsers/devices
 		connect: {
 			server: {
@@ -178,9 +231,11 @@ module.exports = function(grunt) {
 		}
 	});
 
-	grunt.registerTask('default', ['htmlbuild','sass','uglify','csslint','jshint']);
+	grunt.registerTask('default', ['htmlbuild','sass','csso','uglify','csslint','jshint']);
 
-	grunt.registerTask('img', ['svgmin','grunticon','svg2png','imageoptim']);
+	grunt.registerTask('critical', ['criticalcss','csso:compress_critical']);
+
+	grunt.registerTask('img', ['svgmin','svg2png','imageoptim','copy:images']);
 
 	grunt.registerTask('server', ['connect:server']);
 };

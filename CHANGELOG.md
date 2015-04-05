@@ -8,7 +8,7 @@
 
 * add non-standard code to remove the 300ms tap delay on Windows phones
 
-## v0.2.4 2014-06-25
+## v0.2.3 2014-06-25
 
 * remove unused grunt plugin
 * fix issue where imageoptim was failing sometimes
