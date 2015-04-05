@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 2015-04-05
+
+* add grunt-criticalcss
+* add grunt-csso
+* add grunt-copy for images
+* better image management so nothing needs saved to dist/
+* improvements to HTML `<head>`
+
 ## v0.2.5 2014-08-31
 
 * various fixes and enhancements
