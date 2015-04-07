@@ -10,7 +10,7 @@ module.exports = function(grunt) {
 		watch: {
 			html: {
 				files: 'src/**/*.html',
-				tasks: ['htmlbuild','htmlmin'],
+				tasks: ['htmlbuild'],
 				option: {
 					interrupt: true
 				}
@@ -30,6 +30,19 @@ module.exports = function(grunt) {
 				options: {
 					interrupt: true
 				}
+			},
+
+			// Separate copy tasks instead of something like
+			// tasks: ['sass', 'copy:css'] in the css watch task
+			// as it's much faster
+			wp_css: {
+				files: 'dist/css/*.css',
+				tasks: ['copy:css']
+			},
+
+			wp_js: {
+				files: 'dist/js/*.js',
+				tasks: ['copy:js']
 			}
 		},
 
@@ -208,7 +221,7 @@ module.exports = function(grunt) {
 		},
 
 		copy: {
-			images: {
+			frontend_images: {
 				expand: true,
 				cwd: 'src/assets/',
 				src: '**',
@@ -216,6 +229,63 @@ module.exports = function(grunt) {
 				flatten: true,
 				filter: 'isFile'
 			},
+			
+			icons: {
+				files: [{
+					expand: true,
+					cwd: 'dist/css/icons/',
+					src: ['**'],
+					dest: 'wp-content/themes/bp/css/icons/'
+				}]
+			},
+
+			images: {
+				files: [{
+					expand: true,
+					cwd: 'dist/images/',
+					src: ['**'],
+					dest: 'wp-content/themes/bp/images/'
+				}]
+			},
+
+			css: {
+				files: [{
+					expand: true,
+					cwd: 'dist/css/',
+					src: ['*'],
+					dest: 'wp-content/themes/bp/css/',
+					isFile: true
+				}]
+			},
+
+			critical: {
+				files: [{
+					expand: true,
+					cwd: 'src/parts/',
+					src: ['*.css'],
+					dest: 'wp-content/themes/bp/fe-includes/'
+				}]
+			},
+
+			js: {
+				files: [{
+					expand: true,
+					cwd: 'dist/js',
+					src: ['*'],
+					dest: 'wp-content/themes/bp/js',
+					isFile: true
+				}]
+			},
+
+			fonts: {
+				files: [{
+					expand: true,
+					cwd: 'dist/fonts',
+					src: ['*'],
+					dest: 'wp-content/themes/bp/fonts',
+					isFile: true
+				}]
+			}
 		},
 
 		// Connect plugin for server and synchronisation between browsers/devices
@@ -231,11 +301,12 @@ module.exports = function(grunt) {
 		}
 	});
 
-	grunt.registerTask('default', ['htmlbuild','sass','csso','uglify','csslint','jshint']);
+	grunt.registerTask('default', ['htmlbuild','sass','uglify','csslint','jshint']);
 
-	grunt.registerTask('critical', ['criticalcss','csso:compress_critical']);
+	grunt.registerTask('critical', ['criticalcss','csso:compress_critical','copy:critical']);
 
-	grunt.registerTask('img', ['svgmin','svg2png','imageoptim','copy:images']);
+	grunt.registerTask('img', ['svgmin','grunticon','svg2png','imageoptim','copy:icons','copy:images']);
 
 	grunt.registerTask('server', ['connect:server']);
 };
+

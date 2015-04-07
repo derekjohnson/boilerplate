@@ -39,3 +39,8 @@ A modified version of [HTML5 boilerplate](https://github.com/h5bp/html5-boilerpl
 #### Grunt
 
 * Tasks loaded using jit-grunt for approximately 1.5s (75%) time saving on `grunt`. Much more on watch tasks.
+
+### TODO
+
+* Get Grunticon stuff in from the start
+* Fonts
