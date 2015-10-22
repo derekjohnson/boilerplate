@@ -30,19 +30,6 @@ module.exports = function(grunt) {
 				options: {
 					interrupt: true
 				}
-			},
-
-			// Separate copy tasks instead of something like
-			// tasks: ['sass', 'copy:css'] in the css watch task
-			// as it's much faster
-			wp_css: {
-				files: 'dist/css/*.css',
-				tasks: ['copy:css']
-			},
-
-			wp_js: {
-				files: 'dist/js/*.js',
-				tasks: ['copy:js']
 			}
 		},
 
@@ -79,8 +66,7 @@ module.exports = function(grunt) {
 				files: {
 					'dist/css/style.css': 'src/sass/style.scss',
 					'dist/css/old-ie.css': 'src/sass/old-ie.scss',
-					'dist/css/really-old-ie.css': 'src/sass/really-old-ie.scss',
-					'dist/css/fonts.css': 'src/sass/webfonts.scss'
+					'dist/css/really-old-ie.css': 'src/sass/really-old-ie.scss'
 				}
 			}
 		},
@@ -141,7 +127,7 @@ module.exports = function(grunt) {
 				},
 
 				files: {
-					'dist/js/script.min.js': ['src/js/main.js']
+					'dist/js/script.min.js': ['src/js/main.js','src/js/fonts.js']
 				}
 			}
 		},
@@ -208,15 +194,16 @@ module.exports = function(grunt) {
 					cwd: 'src/assets/icons/',
 					src: ['*.svg', '*.png'],
 					dest: 'dist/css/icons/'
-				}]
+				}],
 
-				/*options: {
-					customselectors: {
+				options: {
+					enhanceSVG: true
+					/*customselectors: {
 						"*": [".icon-$1:before"]
 						// (this is going to be very useful)
-					}
+					}*/
 					
-				}*/
+				}
 			}
 		},
 
@@ -229,64 +216,7 @@ module.exports = function(grunt) {
 				flatten: true,
 				filter: 'isFile'
 			},
-			
-			icons: {
-				files: [{
-					expand: true,
-					cwd: 'dist/css/icons/',
-					src: ['**'],
-					dest: 'wp-content/themes/bp/css/icons/'
-				}]
-			},
-
-			images: {
-				files: [{
-					expand: true,
-					cwd: 'dist/images/',
-					src: ['**'],
-					dest: 'wp-content/themes/bp/images/'
-				}]
-			},
-
-			css: {
-				files: [{
-					expand: true,
-					cwd: 'dist/css/',
-					src: ['*'],
-					dest: 'wp-content/themes/bp/css/',
-					isFile: true
-				}]
-			},
-
-			critical: {
-				files: [{
-					expand: true,
-					cwd: 'src/parts/',
-					src: ['*.css'],
-					dest: 'wp-content/themes/bp/fe-includes/'
-				}]
-			},
-
-			js: {
-				files: [{
-					expand: true,
-					cwd: 'dist/js',
-					src: ['*'],
-					dest: 'wp-content/themes/bp/js',
-					isFile: true
-				}]
-			},
-
-			fonts: {
-				files: [{
-					expand: true,
-					cwd: 'dist/fonts',
-					src: ['*'],
-					dest: 'wp-content/themes/bp/fonts',
-					isFile: true
-				}]
-			}
-		},
+		}
 
 		// Connect plugin for server and synchronisation between browsers/devices
 		connect: {
@@ -309,4 +239,3 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('server', ['connect:server']);
 };
-
