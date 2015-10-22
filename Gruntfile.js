@@ -176,14 +176,15 @@ module.exports = function(grunt) {
 			}
 		},
 
-		imageoptim: {
+		imageoptim: { // imageOptim, imageAlpha and jpegMini need to be installed. Also see https://www.npmjs.com/package/imageoptim-cli#jpegmini-and-support-for-assistive-devices for jpegMini to work
 			prod: {
 				options: {
+					jpegMini: true,
 					imageAlpha: true,
 					quitAfter: true
 				},
 
-				src: ['src/assets/png']
+				src: ['src/assets/png', 'src/assets/jpg']
 			}
 		},
 
@@ -216,7 +217,7 @@ module.exports = function(grunt) {
 				flatten: true,
 				filter: 'isFile'
 			},
-		}
+		},
 
 		// Connect plugin for server and synchronisation between browsers/devices
 		connect: {
@@ -233,9 +234,9 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('default', ['htmlbuild','sass','uglify','csslint','jshint']);
 
-	grunt.registerTask('critical', ['criticalcss','csso:compress_critical','copy:critical']);
+	grunt.registerTask('critical', ['criticalcss','csso:compress_critical']);
 
-	grunt.registerTask('img', ['svgmin','grunticon','svg2png','imageoptim','copy:icons','copy:images']);
+	grunt.registerTask('img', ['svgmin','grunticon','svg2png','imageoptim','copy:frontend_images']);
 
 	grunt.registerTask('server', ['connect:server']);
 };
